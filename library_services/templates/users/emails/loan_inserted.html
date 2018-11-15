@@ -1,0 +1,38 @@
+{% extends 'email_base.html' %}
+
+{% block title %}
+Biblioteca universitaria
+{% endblock %}
+
+{% block preview %}
+Prestito inserito - info
+{% endblock %}
+
+{% block content %}
+
+    {{ date }}
+    <p></p>
+    <P> Gentile {{ user }},</P>
+    <p></p>
+    <p>
+        la informiamo che il libro &nbsp;<strong>{{ book }}</strong>&nbsp da lei richiesto è ora disponibile al ritiro presso la nostra biblioteca.
+    </p>
+    <p>
+        La preghiamo cortesemente di presentarsi in biblioteca a ritirare il testo entro 7 giorni o di annullare il
+        prestito nella <a href="{{ profile_url }}">pagina personale</a> del nostro sito qualora non fosse piu' interessato.
+    </p>
+    <p>
+        Superati 7 giorni il libro tornerà ad essere disponibile al prestito.
+    </p>
+    <p>
+        Qualora abbia gia' provveduto al ritiro la preghiamo di ignorare questa comunicazione.
+    </p>
+    <p>
+        Grazie per la collaborazione.
+    </p>
+    <p>
+        Cordiali saluti
+    </p>
+
+{% endblock %}
+

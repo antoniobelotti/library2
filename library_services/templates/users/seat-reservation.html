@@ -1,0 +1,72 @@
+{% extends 'base_userprofile_navbar.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block right_content %}
+
+    <div class="row pt-5">
+        <div class="col-10 offset-1">
+            <h2>Scegli una data</h2>
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="input-group date form-inline col" id="datetimepicker4" data-target-input="nearest">
+                        <input type="text" name="date" class="form-control datetimepicker-input" data-target="#datetimepicker4"/>
+
+                        <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+
+                        <div class="col">
+                            <button class="btn btn-outline-success" type="submit" id="datetimepickerbtn">Prenota posto</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    {% if reservations %}
+    <div class="row pt-5">
+        <div class="col-10 offset-1">
+            <h2>Le prenotazioni di posti già effettuate</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Codice posto</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in reservations %}
+                        <tr>
+                            <td>{{ res.date }}</td>
+                            <td>{{ res.seat.id }}</td>
+                            <td>
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="text" name="reservation_id" value="{{ res.id }}" hidden>
+                                    <button type="submit" class="btn btn-outline-danger">Disdici prenotazione</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/users/seat_reservation.js' %}"></script>
+{% endblock %}

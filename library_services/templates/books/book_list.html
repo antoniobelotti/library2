@@ -1,0 +1,59 @@
+{% extends 'base_navbar.html'%}
+
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block right_content %}
+
+    <form action="{% url 'book-list' %}" method="get">
+        <label class="col-form-label" for="searchbar"><h4>Ricerca per titolo o autore</h4></label>
+        <div class="input-group">
+
+            <input type="text" id="searchbar" name="q" placeholder="Cerca" class="form-control"/>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if not object_list %}
+        <h3 class=" text-center pt-5">
+            La ricerca non ha prodotto nessun risultato
+        </h3>
+    {% else %}
+
+        <table class="table pt-5">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Titolo</th>
+            <th>Autore</th>
+            <th>Anno</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in object_list %}
+            <tr>
+                <td>
+                    <img src="{{ book.cover_img }}" class="img-thumbnail" width="100" height="100">
+                </td>
+                <td>{{ book.title }} </td>
+                <td>{{ book.author }} </td>
+                <td>
+                    {% if user.is_staff %}
+                        <a href="{{ book.get_absolute_url }}/staff">
+                    {% else %}
+                        <a href="{{ book.get_absolute_url }}">
+                    {% endif %}
+                    <button class="btn"> dettagli </button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</tbody>
+</table>
+{% endblock %}

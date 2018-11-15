@@ -1,0 +1,195 @@
+{% extends 'base_navbar.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block right_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <img class="img-thumbnail" src="{{ book.cover_img }}">
+            </div>
+
+            <div class="col-8">
+
+                <h1>
+                    {{ book.title }}
+                </h1>
+
+
+                <table class="table">
+                    <thead>
+                    &nbsp;
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Autore:</td>
+                        <td>{{ book.author }}</td>
+                    </tr>
+                    <tr>
+                        <td>Edizione:</td>
+                        <td>{{ book.publishing_year }}</td>
+                    </tr>
+                    <tr>
+                        <td>ISBN:</td>
+                        <td>{{ book.isbn}}</td>
+                    </tr>
+                    <tr>
+                        <td>Lingua: </td>
+                        <td>{{ book.get_language_display}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+                &nbsp;
+
+                {% if active_loan %}
+
+                    <!-----------------------------USER HAS AN ACTIVE LOAN------------------------------------->
+                    <div class="card table-bordered">
+                        {% if active_loan.is_expired %}
+                            <div class="card-body bg-light">
+                                <div class="card-title">
+                                    <h5 class="text-danger">Devi ancora riportare questo libro! Il prestito &egrave; scaduto da {{ active_loan.is_expired_by }} giorni!</h5>
+                                    {% if active_loan.can_be_renewed %}
+                                        <h5>Puoi rinnovare il prestito nella sezione<a href="{% url 'user-profile' %}">  prestiti in corso. </a></h5>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        {% else %}
+
+                            <div class="card-body bg-light">
+                                <h5 class="card-title">Hai già un prestito attivo per questo libro</h5>
+                                <ul>
+                                    {% if not active_loan.started_on %}
+                                        <li>Non hai ancora ritirato la copia. Ti ricordiamo che hai 7 giorni di tempo (da quando hai richiesto il prestito) per andare in biblioteca e ritirare la tua copia</li>
+                                    {% else %}
+                                        <li>Copia prelevata il: {{ active_loan.started_on }}</li>
+                                        <li>Scade il: {{ active_loan.expiration_date }}</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                        {% endif %}
+                    </div>
+                    <!-------------------------END | USER HAS AN ACTIVE LOAN------------------------------------->
+
+
+                {% elif has_reservation%}
+
+                    <!-----------------------------USER HAS AN ACTIVE LOAN RESERVATION------------------------->
+                    <div class="card border-0">
+                        <div class="card-title">
+                            <div class="alert alert-danger" role="alert">
+                                <h4>Hai già una prenotazione in coda per questo libro</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-------------------------END | USER HAS AN ACTIVE LOAN RESERVATION------------------------->
+
+                {% else %}
+
+                    <!-----------------------------MAKE A LOAN RESERVATION--------------------------------------->
+                    {% if book.has_at_least_one_rent_copy %}
+                        {% if book.has_copy_available_for_rent %}
+                            <div class="card table-bordered">
+                                <div class="card-body bg-light">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <h5 class="card-title text-success">Il libro è disponibile al prestito</h5>
+                                        </div>
+                                        <div class="col-4">
+                                            <form method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="insert_loan">
+                                                <button type="submit" class="btn btn-success">
+                                                    Richiedi prestito
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card table-bordered">
+                                <div class="card-body bg-light">
+                                    <h5 class="card-title text-danger">Al momento non ci sono copie disponibili.</h5>
+                                    <form method="post" action="">
+                                        {% csrf_token %}
+                                        <p class="card-text">Puoi effettuare una prenotazione. Non appena una copia tornerà disponibile ti avviseremo per mail e potrai ritirare il libro</p>
+                                        <input type="hidden" name="action" value="insert_rent_reservation">
+                                        <button type="submit" id="reservation" class="btn btn-warning">Prenota prestito</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% elif book.has_at_least_one_cons_copy %}
+                        <div class="card table-bordered">
+                            <div class="card-body bg-light">
+                                <h5 class="card-title text-warning">Questo libro è al momento disponibile solo per la consultazione in biblioteca</h5>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="card table-bordered">
+                            <div class="card-body bg-light">
+                                <h5 class="card-title text-danger">Al momento la biblioteca non ha nessuna copia di questo libro</h5>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <!-----------------------------END | MAKE A LOAN RESERVATION------------------------->
+
+                {% endif %}
+
+
+                {% if object.has_at_least_one_cons_copy and user.is_college_student %}
+                    <hr>
+                    <!-----------------------------MAKE A CONSULTATION RESERVATION------------------------->
+
+                    <div class="card table-bordered">
+                        <div class="card-body bg-light">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h5 class="card-title">Vuoi venire in biblioteca a studiare ma ti serve assolutamente questo volume? Prenotane una copia in consultazione! </h5>
+                                </div>
+                                <div class="col-4">
+                                    <form method="post" action="">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <input type="hidden" name="action" value="insert_consultation_reservation"/>
+                                            <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                                                <input type="text" name="date" class="form-control datetimepicker-input" data-target="#datetimepicker4"/>
+                                                <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-success" type="submit" id="datetimepickerbtn">Prenota</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-------------------------END | MAKE A CONSULTATION RESERVATION------------------------->
+                {% endif %}
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/book/detail.js' %}"></script>
+{% endblock %}

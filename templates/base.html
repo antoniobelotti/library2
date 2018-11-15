@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="A framework for launching new Django projects quickly.">
+<meta name="author" content="">
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon_32.png' %}">
+
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}">
+<link rel="stylesheet" href="{% static 'css/all.css'%}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+{% block css %}
+
+{% endblock %}
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+
+</head>
+
+<body>
+
+    {% block navbar %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+  <!-- Bootstrap JavaScript -->
+
+  <script src="{% static 'js/popper.min.js'%}"></script>
+  <script src="{% static 'js/bootstrap.min.js'%}"></script>
+
+  <!-- 3rd party JavaScript -->
+  {% block js %}
+
+  {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+{% extends 'base_navbar.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block right_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4 d-flex flex-column">
+                <img class="img-thumbnail img-fluid h-100 w-50" src="{{ book.cover_img }}">
+            </div>
+            <div class="col-8">
+
+                <h1>
+                    {{ book.title }}
+                </h1>
+
+
+                <table class="table">
+                    <thead>
+                    &nbsp;
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Autore:</td>
+                        <td>{{ book.author }}</td>
+                    </tr>
+                    <tr>
+                        <td>Edizione:</td>
+                        <td>{{ book.publishing_year }}</td>
+                    </tr>
+                    <tr>
+                        <td>ISBN:</td>
+                        <td>{{ book.isbn}}</td>
+                    </tr>
+                    <tr>
+                        <td>Lingua: </td>
+                        <td>{{ book.get_language_display}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <h4 class="col-6">Copie disponibili</h4>
+            <div class="col-6">
+                <button class="btn btn-outline-primary float-right" data-toggle="modal" data-target="#add_copies_modal">
+                    Aggiungi copie
+                </button>
+            </div>
+        </div>
+        <div class="row pt-2">
+            <table class="table table-striped text-center">
+                <thead>
+                <tr>
+                    <th>Codice copia</th>
+                    <th>Destinazione utilizzo</th>
+                    <th>Codice scaffale</th>
+                    <th>Posizione scaffale</th>
+                    <th>In sede</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for set in data%}
+                    <tr>
+                        <td>{{ set.copy.id }}</td>
+                        <td>
+                            {% if set.copy.use_destination == "to_rent" %}
+                                Noleggio <i class="fas fa-sign-out-alt"></i>
+                            {% else %}
+                                Consultazione <i class="fas fa-glasses"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ set.copy.on_shelf.id}}</td>
+                        <td>{{ set.copy.on_shelf.position }}</td>
+
+                        {% if not set.active_loan %}
+                            <td class="text-success"><i class="fas fa-check-circle"></i> Si</td>
+                        {% else %}
+                            <td class="text-secondary"><i class="fas fa-times-circle"></i> No</td>
+                        {% endif %}
+
+                        <td>
+                            <div class="btn-group dropleft" role="group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle {% if set.disable_actions %} disabled {% endif %}" data-toggle="dropdown">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <div class="dropdown-menu" >
+                                    <a class="dropdown-item text-danger delete_copy_btn" value="{{ set.copy.id }}">
+                                        <i class="fas fa-exclamation"></i>
+                                        Elimina copia
+                                    </a>
+                                    <a class="dropdown-item switch_use_destination_btn" value="{{ set.copy.id }}">
+                                        <i class="fas fa-toggle-on text-right"></i>
+                                        Cambia destinazione utilizzo
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- delete copy modal -------------------------------------------------------------------------------->
+    <div class="modal fade" id="delete_copy_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Vuoi eliminare la copia con id
+                        <label id="delete_copy_modal_id" class="font-weight-bold"></label>?
+                    </h5>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm_delete" type="button" class="btn btn-danger">Conferma</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- switch use detination modal -------------------------------------------------------------------------------->
+    <div class="modal fade" id="switch_use_destination_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Vuoi cambiare la destinazione di utilizzo della copia con codice
+                        <label id="switch_use_destination_modal_id" class="font-weight-bold"></label>?
+                    </h5>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm_switch" type="button" class="btn btn-danger">Conferma</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- add copies modal -------------------------------------------------------------------------------->
+    <div class="modal" id="add_copies_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aggiungi copie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form" method="post" action="">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="hidden" name="action" value="form_valid">
+                        <input type="submit" class="btn btn-outline-primary float-right" value="Invia">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="post_action_form" action="" method="post" hidden>
+        {% csrf_token %}
+        <input type="text" id="action" name="action" value="">
+        <input type="text" id="copy_id" name="copy_id" value="">
+    </form>
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/staff/book-detail.js' %}"></script>
+{% endblock %}

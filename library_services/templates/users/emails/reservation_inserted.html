@@ -1,0 +1,35 @@
+{% extends 'email_base.html' %}
+
+{% block title %}
+    Biblioteca universitaria
+{% endblock %}
+
+{% block preview %}
+    Prenotazione inserita - info
+{% endblock %}
+
+{% block content %}
+
+    {{ date }}
+    <p></p>
+    <P> Gentile {{ user }},</P>
+    <p></p>
+    <p>
+        la informiamo che la sua prenotazione per il libro &nbsp;<strong>{{ book }}</strong>&nbsp è stata inserita nel sistema.
+    </p>
+    <p>
+        Non appena una copia sarà disponibile verrà informato per email e potrà provvedere al ritiro.
+    </p>
+    <p>
+        Qualora abbia inserito la prenotazione per sbaglio la preghiamo di annullare l'operazione dalla
+        <a href="{{ profile_url }}"> pagina personale</a>.
+    </p>
+    <p>
+        Grazie per la collaborazione.
+    </p>
+    <p>
+        Cordiali saluti
+    </p>
+
+{% endblock %}
+

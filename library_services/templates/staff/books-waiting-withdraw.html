@@ -1,0 +1,131 @@
+{% extends 'base_admin_navbar.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block right_content %}
+
+    <div class="container">
+
+        {% if to_prepare %}
+
+            <h1>Libri da preparare</h1>
+
+            <table class="table disabled">
+                <thead>
+                <tr>
+                    <th>Utente</th>
+                    <th>ISBN</th>
+                    <th>Titolo</th>
+                    <th>Autore</th>
+                    <th>Id Copia</th>
+                    <th>Id Scaffale</th>
+                    <th>Posizione Scaffale</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="not_ready_books">
+                {% for loan in to_prepare %}
+
+                    <tr id="row-{{ loan.loan_id }}">
+                        <td>
+                            {{loan.user_email}}
+                        </td>
+                        <td>
+                            {{loan.isbn}}
+                        </td>
+                        <td>
+                            {{loan.title}}
+                        </td>
+                        <td>
+                            {{loan.author}}
+                        </td>
+                        <td>
+                            {{loan.copy_id}}
+                        </td>
+                        <td>
+                            {{loan.shelf_id}}
+                        </td>
+                        <td>
+                            {{loan.shelf_pos}}
+                        </td>
+                        <td>
+                            <button class="btn btn-success loan_ready" value="{{ loan.loan_id }}" id="btn-{{ loan.loan_id }}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+
+        {% elif ready_to_withdraw %}
+
+            <h1>Libri già pronti</h1>
+            <table class="table">
+                <thead class="text-muted">
+                <tr>
+                    <th>Utente</th>
+                    <th>ISBN</th>
+                    <th>Titolo</th>
+                    <th>Autore</th>
+                    <th>Id Copia</th>
+                    <th>Id Scaffale</th>
+                    <th>Posizione Scaffale</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="not_ready_books">
+                {% for loan in ready_to_withdraw %}
+
+                    <tr id="row-{{ loan.loan_id }}" class="disabled text-muted">
+                        <td>
+                            {{loan.user_email}}
+                        </td>
+                        <td>
+                            {{loan.isbn}}
+                        </td>
+                        <td>
+                            {{loan.title}}
+                        </td>
+                        <td>
+                            {{loan.author}}
+                        </td>
+                        <td>
+                            {{loan.copy_id}}
+                        </td>
+                        <td>
+                            {{loan.shelf_id}}
+                        </td>
+                        <td>
+                            {{loan.shelf_pos}}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        {% else %}
+            <h3 class="text-center pt-5">Non c'è nessun libro da preparare</h3>
+            <h3 class="text-center pt-5">¯\_(ツ)_/¯</h3>
+        {% endif %}
+
+    </div>
+
+    <form id="loan_ready_form" action="" method="post" hidden>
+        {% csrf_token %}
+        <input id="loan_id" name="loan_id" type="text" value="">
+    </form>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/librarian_admin_panel.js' %}"></script>
+{% endblock %}

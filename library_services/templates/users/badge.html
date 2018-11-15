@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style>
+
+        @page {
+            size: a4 portrait;
+
+            @frame header_frame {           /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+            }
+            @frame content_frame {          /* Content Frame */
+                left: 50pt; width: 300pt; top: 90pt; height: 632pt;
+
+            }
+            @frame footer_frame {           /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
+        }
+
+        .title span {
+            color: #007cae;
+        }
+
+        h1{
+            font-size: 240%;
+            font-weight: 100;
+        }
+        h2{
+            font-size: 200%;
+            font-weight: 100;
+        }
+        p{
+            border: dotted #0b2e13;
+            font-size: 150%;
+            font-weight: 100;
+            padding-left: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-right: 20px;
+        }
+        img{
+            padding-left: 50px;
+            padding-top: 50px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="header-frame">
+    <h1>Ecco il tuo Badge! </h1>
+    <h2>Stampa questo documento e ritaglia lungo il riquadro; ti servir&agrave per ritirare i libri ed accedere all'aula studio.</h2>
+</div>
+<div>
+
+    <p>
+        Biblioteca Universitaria
+        <br><br>
+
+            Questo badge &egrave; di {{ user.first_name }} {{ user.last_name }}
+            <br>
+            {{ user.email }}
+            <br><br>
+            codice: {{ user.badge.code }}
+    </p>
+
+
+</div>
+
+</body>
+</html>

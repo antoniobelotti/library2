@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Prestiti</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Titolo libro
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for loan in loans_to_return %}
+            <tr>
+                <td>
+                    {{ loan.book_copy.book.title }}
+                </td>
+                <td>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="loan">
+                        <input type="hidden" name="id" value="{{ loan.id }}">
+                        <button type="submit" class="btn btn-success">Restituisci</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>Consultazioni</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Titolo libro
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for cons in cons_to_return %}
+            <tr>
+                <td>
+                    {{ cons.copy.book.title}}
+                </td>
+                <td>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="cons">
+                        <input type="hidden" name="id" value="{{ cons.id }}">
+                        <button type="submit" class="btn btn-success">Restituisci</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

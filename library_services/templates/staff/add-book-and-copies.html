@@ -1,0 +1,15 @@
+{% extends 'base_admin_navbar.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block right_content %}
+
+    <h1>Aggiungi Libro</h1>
+    <div class="container pb-5">
+        <form action="{% url 'add-book-and-copies' %}" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-outline-primary float-right" type="submit" value="Invia" />
+        </form>
+    </div>
+{% endblock %}

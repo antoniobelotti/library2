@@ -1,0 +1,24 @@
+{% extends 'base_navbar.html' %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+
+{% block extra_links %}
+
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0 border-bottom-0 " href="{% url 'buy-book' %}">
+        Richiedi Acquisto
+    </a>
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0 border-bottom-0  " href="{% url 'add-book-and-copies' %}">
+        Aggiungi Libro
+    </a>
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0 border-bottom-0" href="{% url 'to-withdraw-book-list' %}">
+        Libri Da Preparare
+    </a>
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0" href="{% url 'change_password' %}">
+        Cambia Password
+        <i class="fas fa-key"></i>
+    </a>
+
+{% endblock %}

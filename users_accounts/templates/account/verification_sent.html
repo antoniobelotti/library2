@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Log in{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+    <div class="row pt-lg-5">
+        <div class="col-6 offset-3">
+
+            <div class="card-wrapper">
+                <div class="brand text-center pb-5">
+                    <img src="{% static 'images/favicon_96.png' %}">
+                    <h1>Biblioteca Universitaria</h1>
+                </div>
+                <div class="card fat">
+                    <div class="card-body">
+                        <h4 class="card-title">Conferma e-mail</h4>
+                        <h5>Abbiamo inviato una e-mail di conferma. Controlla la posta </h5>
+                    </div>
+                    <div class="card-footer bg-light text-right">
+
+
+                        <a href="{% url 'account_login' %}">
+                            <button class="btn btn-outline-primary">
+                            Login
+                            <i class="fas fa-sign-in-alt"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

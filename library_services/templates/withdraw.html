@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>
+            Titolo libro
+        </th>
+        <th>
+            Prestito richiesto il
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for loan in loans_to_withdraw %}
+        <tr>
+        <td>{{ loan.book_copy.book.title }}</td>
+        <td>{{ loan.inserted_on }}</td>
+        <td>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="loan">
+                <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                <button type="submit" class="btn btn-success">Ritira</button>
+            </form>
+        </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    {% if is_user_inside_study_hall %}
+    <table class="table">
+    <thead>
+    <tr>
+        <th>
+            Titolo libro
+        </th>
+        <th>
+            Ritira
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for res in cons_reservations %}
+        <tr>
+        <td>{{res.copy.book.title }}</td>
+        <td>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="cons">
+                <input type="hidden" name="cons_res_id" value="{{ res.id }}">
+                <button type="submit" class="btn btn-success">Ritira</button>
+            </form>
+        </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}
+
+{% endblock %}

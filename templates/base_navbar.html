@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block navbar %}
+    <div class="container-fluid">
+        <div class="row pt-5">
+            <div class="col-3 position-fixed">
+                <div class="row h-75">
+                    <div class="col-3">
+                        <img  src="{% static 'images/favicon_96.png' %}" width="75%"/>
+                    </div>
+                    <div class="col-9">
+                        <h2>{{ title }}</h2>
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="btn-group-vertical w-100 pt-5">
+
+
+                    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0 " href="{% url 'book-list' %}">
+                        Catalogo
+                        <i class="fas fa-archive"></i>
+                    </a>
+
+
+                    {% if not profile %}
+                        {% if user.is_staff %}
+                            <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0" href="{% url 'librarian-admin-panel' %}">
+                                Pannello Amministrazione
+                                <i class="fas fa-cogs"></i>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0" href="{% url 'active-loans' %}">
+                                Profilo
+                                <i class="fas fa-user"></i>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% block extra_links %}
+
+                    {% endblock %}
+
+                    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0 text-danger" href="{% url 'account_logout' %}">
+                        Logout
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+
+
+                    <div class="row pt-5 pl-3">
+                        <div class="col-12 w-100">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="messages alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    <p class="fixed-bottom pl-5 pb-2">
+                        Bentornato, {{ user.first_name }} {{ user.last_name }}
+                    </p>
+
+                </div>
+
+            </div>
+            <!---------------- All Books listed ----------------------------------------->
+            <div class="col-9 offset-3 pt-2">
+
+                {% block right_content %}
+
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/navbar.js' %}"></script>
+{% endblock %}
+

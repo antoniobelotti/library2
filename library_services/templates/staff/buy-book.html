@@ -1,0 +1,15 @@
+{% extends 'base_admin_navbar.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block right_content %}
+    <h1>Richiedi acquisto libro</h1>
+    <div class="container">
+        <form action="{% url 'buy-book' %}" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-outline-primary float-right" type="submit" value="Invia" />
+        </form>
+
+    </div>
+{% endblock %}

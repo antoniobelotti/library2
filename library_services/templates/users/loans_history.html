@@ -1,0 +1,50 @@
+{% extends 'base_userprofile_navbar.html' %}
+
+{% load static %}
+
+{% block right_content %}
+
+    <div id="active_loans" class="pt-5" >
+        {% if not object_list %}
+            <h3>Non hai mai concluso nessun prestito</h3>
+        {% else %}
+            <h3>Prestiti in corso</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Richiesto il</th>
+                    <th>Iniziato il</th>
+                    <th>Terminato il</th>
+                    <th>Rinnovato</th>
+                    <th>Libro</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for  loan in object_list %}
+                    <tr>
+                        <td>{{ loan.inserted_on }}</td>
+                        <td>{{ loan.started_on }}</td>
+                        <td>{{ loan.finished_on }}</td>
+                        <td>
+                            {% if loan.renewed_on %}
+                                <i class="fas fa-check-circle"></i> Si
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'book-detail' pk=loan.book_copy.book.id %}">{{ loan.book_copy.book.title }} - {{ loan.book_copy.book.author }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/users/show_collapsable.js' %}"></script>
+{% endblock %}

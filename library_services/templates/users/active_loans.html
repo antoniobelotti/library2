@@ -1,0 +1,93 @@
+{% extends 'base_userprofile_navbar.html' %}
+
+{% load static %}
+
+{% block right_content %}
+
+    <div id="active_loans" class="pt-5" >
+        {% if not object_list %}
+            <h3>Non hai nessun prestito in corso</h3>
+        {% else %}
+            <h3>Prestiti in corso</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Richiesto il</th>
+                    <th>Iniziato il</th>
+                    <th>Rinnovato</th>
+                    <th>Libro</th>
+                    <th>Scade il</th>
+                    <th>Azione</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for  loan in object_list%}
+                    <tr>
+                        <td>{{ loan.inserted_on }}</td>
+                        <td>
+                            {% if loan.started_on %}
+                                {{ loan.started_on }}
+                            {% else %}
+                                <p class="text-danger"> Non hai ancora ritirato la copia</p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loan.renewed_on %}
+                                <i class="fas fa-check-circle"></i> Si
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'book-detail' pk=loan.book_copy.book.id %}">{{ loan.book_copy.book.title }} - {{ loan.book_copy.book.author }}</a>
+                        </td>
+
+                        <td>
+                            {% if loan.is_expired %}
+                                <p class="text-danger"> Scaduto</p>
+                            {% elif  loan.expiration_date %}
+                                {{ loan.expiration_date }}
+                            {% else %}
+                                ¯\_(ツ)_/¯
+                            {% endif %}
+                        </td>
+
+                        {% if not loan.started_on %}
+                            <td>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete_loan" value="{{ loan.id }}">
+                                    <input type="hidden" name="action"      value="delete_loan">
+                                    <button class="btn btn-danger">Annulla prestito</button>
+                                </form>
+                            </td>
+                        {% endif %}
+
+                        {% if loan.can_be_renewed%}
+                            <td>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="renew_loan"  value="{{ loan.id }}">
+                                    <input type="hidden" name="action"      value="renew_loan">
+                                    <button class="btn btn-outline-warning">Rinnova prestito</button>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td>
+                                <p class="text-danger">Non puoi rinnovare il prestito</p>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/users/show_collapsable.js' %}"></script>
+{% endblock %}

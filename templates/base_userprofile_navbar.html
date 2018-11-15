@@ -1,0 +1,58 @@
+{% extends 'base_navbar.html' %}
+{% load static %}
+
+{% block css %}
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+{% endblock %}
+
+
+{% block extra_links %}
+    <a class="btn btn-outline-secondary border-left-0 border-right-0 border-top-0" data-toggle="collapse" href="#extra" role="button" style="text-decoration: underline;">
+        Prestiti
+        <i class="fas fa-bars pl-1"></i>
+    </a>
+
+    <div id="extra" class="collapse pt-2 text-justify w-100">
+        <ul class="list-group list-group-flush">
+
+            <a id="active_loans_btn" class="list-group-item list-group-item-action" href="{% url 'active-loans' %}">
+                Prestiti in corso
+            </a>
+
+
+            <a id="dead_loans_btn" class="list-group-item list-group-item-action" href="{% url 'loans-history' %}">
+                Storico prestiti
+            </a>
+
+            <a id="rent_reservations_btn" class="list-group-item list-group-item-action" href="{% url 'rent-reservations'%}">
+                Prenotazioni prestiti
+            </a>
+
+            {% if user.is_college_student %}
+                <a id="cons_reservations_btn" class="list-group-item list-group-item-action" href="{% url 'cons-reservations'%}">
+                    Prenotazione prestiti in consultazione
+                </a>
+            {% endif %}
+        </ul>
+    </div>
+
+
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0" href="{% url 'change_password' %}">
+        Cambia Password
+        <i class="fas fa-key"></i>
+    </a>
+
+    {% if user.is_college_student %}
+        <a class="btn btn-outline-secondary rounded-0 border-0" href="{% url 'seat-reservation' %}">
+            Prenota un posto in aula studio
+        </a>
+    {% endif %}
+
+    <a class="btn btn-outline-secondary rounded-0 border-right-0 border-left-0" href="{% url 'download-badge' %}">
+        Scarica badge
+        <i class="fas fa-id-badge"></i>
+    </a>
+
+{% endblock %}

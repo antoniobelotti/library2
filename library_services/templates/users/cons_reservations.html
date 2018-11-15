@@ -1,0 +1,46 @@
+{% extends 'base_userprofile_navbar.html' %}
+
+{% load static %}
+
+{% block right_content %}
+
+    {% if not object_list  %}
+        <h3>Non hai nessuna prenotazione di libri in consultazione</h3>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Libro</th>
+                <th>Giorno prenotazione</th>
+                <th>Azioni</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reservation in object_list%}
+                <tr>
+                    <td>
+                        <a href="{% url 'book-detail' pk=reservation.copy.book.id %}">{{ reservation.copy.book.title }} - {{ reservation.copy.book.author }}</a>
+                    </td>
+
+                    <td>
+                        {{ reservation.date }}
+                    </td>
+                    <td>
+                        <form method="post" class="{% if reservation.user_is_using_the_copy %} disabled= {% endif %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_cons_res" value="{{ reservation.id }}">
+                            <input type="hidden" name="action" value="delete_cons_res">
+                            <button class="btn btn-warning">Disdici prenotazione</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/users/show_collapsable.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base_userprofile_navbar.html' %}
+
+{% load static %}
+
+{% block right_content %}
+
+
+    {% if not object_list%}
+        <h3>Non hai nessuna prenotazione in attesa</h3>
+    {% else %}
+        <h2>Prenotazioni prestiti</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Libro</th>
+                <th>Tempo attesa approssimativo</th>
+                <th>Azioni</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reservation in object_list %}
+                <tr>
+                    <td>
+                        <p>In coda per:</p>
+                    </td>
+                    <td>
+                        <a href="{% url 'book-detail' pk=reservation.book.id %}">{{ reservation.book.title }} - {{ reservation.book.author }}</a>
+                    </td>
+                    <td>bo</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <input type="hidden" name="delete_rent_res" value="{{ reservation.id }}">
+                            <input type="hidden" name="action" value="delete_rent_res">
+                            <button class="btn btn-warning">Disdici prenotazione</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/users/show_collapsable.js' %}"></script>
+{% endblock %}
